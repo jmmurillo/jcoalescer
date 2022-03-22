@@ -1,10 +1,13 @@
 package org.murillo.coalescer;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Coalescer {
+
+//region Fallback
 
     public static <T> T $(T value, T fallback) {
         return value != null ? value : fallback;
@@ -14,9 +17,37 @@ public class Coalescer {
         return value != null ? value : supplier.get();
     }
 
-    public static <T, E extends Exception> T $E(T value, FallibleSupplier<T, E> supplier) throws E{
+    public static <T, E extends Exception> T $E(T value, FallibleSupplier<T, E> supplier) throws E {
         return value != null ? value : supplier.get();
     }
+
+    //endregion Fallback
+
+//region Fallback optional
+
+    public static <T> T $O(Optional<T> value) {
+        return value != null && value.isPresent() ? value.get() : null;
+    }
+
+    public static <T> T $O(Optional<T> value, T fallback) {
+        return value != null && value.isPresent() ? value.get() : fallback;
+    }
+
+    public static <T> T $O(Optional<T> value, Optional<T> fallback) {
+        return value != null && value.isPresent() ? value.get() : $O(fallback);
+    }
+
+    public static <T> T $O(Optional<T> value, Supplier<Optional<T>> supplier) {
+        return value != null && value.isPresent() ? value.get() : $O(supplier.get());
+    }
+
+    public static <T, E extends Exception> T $OE(Optional<T> value, FallibleSupplier<Optional<T>, E> supplier) throws E {
+        return value != null && value.isPresent() ? value.get() : $O(supplier.get());
+    }
+
+    //endregion Fallback optional
+
+//region Void method chain
 
     public static <A> void $$V(
             A value,
@@ -87,6 +118,9 @@ public class Coalescer {
         consumer.accept(valueE);
     }
 
+    //endregion Void method chain
+
+    //region Returning method chain
     public static <A, B> B $$(
             A value,
             Function<A, B> function) {
@@ -160,6 +194,10 @@ public class Coalescer {
         return valueF;
     }
 
+    //endregion Returning method chain
+
+//region Void fallible method chain
+
     public static <A, X extends Exception> void $$VE(
             A value,
             FallibleConsumer<A, X> consumer) throws X {
@@ -228,6 +266,10 @@ public class Coalescer {
         if (valueE == null) return;
         consumer.accept(valueE);
     }
+
+    //endregion Void fallible method chain
+
+//region Returning fallible method chain
 
     public static <A, B, X extends Exception> B $$E(
             A value,
@@ -301,5 +343,7 @@ public class Coalescer {
         F valueF = functionF.apply(valueE);
         return valueF;
     }
+
+//endregion Returning fallible method chain
 
 }
