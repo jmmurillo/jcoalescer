@@ -1,4 +1,4 @@
-package org.murillo.coalescer;
+package org.murillo.coalescer.fallible;
 
 @FunctionalInterface
 public interface FallibleFunction<I, O, E extends Exception> {

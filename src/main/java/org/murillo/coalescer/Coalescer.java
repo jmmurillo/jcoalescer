@@ -1,5 +1,9 @@
 package org.murillo.coalescer;
 
+import org.murillo.coalescer.fallible.FallibleConsumer;
+import org.murillo.coalescer.fallible.FallibleFunction;
+import org.murillo.coalescer.fallible.FallibleSupplier;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
